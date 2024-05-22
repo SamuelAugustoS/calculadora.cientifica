@@ -1,0 +1,156 @@
+<Button>:
+    text_size: self.size
+    halign: 'center'
+    valign: 'middle'
+    font_size: '20sp'
+
+<CalculatorScreen>:
+    GridLayout:
+        cols: 1
+        padding: dp(10)
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(80)
+            TextInput:
+                id: text_input
+                multiline: False
+                readonly: True
+                font_size: dp(40)
+
+        GridLayout:
+            cols: 4
+            spacing: dp(10)
+            # Botões 0-9 para entrada numérica
+            Button:
+                text: "7"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "8"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "9"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "÷"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "4"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "5"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "6"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "x"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "1"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "2"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "3"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "-"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "."
+                on_press: app.on_button_press(self)
+            Button:
+                text: "0"
+                on_press: app.on_button_press(self)
+                background_normal: ''
+                background_color: 0, 0, 1, 1  # Cor azul
+            Button:
+                text: "="
+                on_press: app.on_button_press(self)
+                background_color: 1, 1, 0, 1  # Cor amarela
+            Button:
+                text: "+"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "^"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "√"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "ex"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "sin"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "cos"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "tan"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "log"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "(-)"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "()"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "<-"
+                on_press: app.on_button_press(self)
+                background_color: 1, 0.5, 0, 1  # Cor laranja
+            Button:
+                text: "C"
+                on_press: app.on_button_press(self)
+                background_color: 1, 0, 0, 1  # Cor vermelha
+            Button:
+                text: "Mod"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "π"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "%"
+                on_press: app.on_button_press(self)
+            Button:
+                text: "Hist"
+                on_press: app.on_button_press(self)
+                background_color: 0, 1, 0, 1  # Cor verde
+
+<HistoryScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: dp(10)
+        Label:
+            id: history_label
+            size_hint_y: None
+            height: dp(500)
+            valign: 'top'
+        Button:
+            text: "Voltar"
+            size_hint_y: None
+            height: dp(50)
+            on_press: app.back_to_calculator()
