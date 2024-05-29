@@ -52,7 +52,7 @@ class CalculatorApp(App):
             self.resultado = ""
             text_input.text = ""
         elif texto_botao == "Mod":
-            self.expressao += "%"
+            self.expressao += "//"
             text_input.text = self.expressao
         elif texto_botao in ["^", "yx"]:
             self.expressao += "**"
@@ -61,7 +61,7 @@ class CalculatorApp(App):
             self.expressao += "√("
             text_input.text = self.expressao
         elif texto_botao == "ex":
-            self.expressao += "exp("
+            self.expressao += "math.exp("
             text_input.text = self.expressao
         elif texto_botao in ["sin", "cos", "tan", "log"]:
             self.expressao += f"{texto_botao}("
@@ -82,7 +82,7 @@ class CalculatorApp(App):
             self.expressao += str(math.pi)
             text_input.text = self.expressao
         elif texto_botao == "%":
-            self.expressao += "/100"
+            self.expressao += "%"
             text_input.text = self.expressao
         elif texto_botao == "Hist":
             self.root.current = 'history'
@@ -100,6 +100,25 @@ class CalculatorApp(App):
         expressao = expressao.replace("log", "math.log10")
         expressao = expressao.replace("x", "*")  # Substitui 'x' pelo operador de multiplicação
         
+        # Substitui porcentagens por divisões apropriadas
+        while '%' in expressao:
+            percent_index = expressao.index('%')
+            left_num, right_num = '', ''
+            # Encontrar o número à esquerda do símbolo de porcentagem
+            i = percent_index - 1
+            while i >= 0 and (expressao[i].isdigit() or expressao[i] == '.'):
+                left_num = expressao[i] + left_num
+                i -= 1
+            # Encontrar o número à direita do símbolo de porcentagem
+            j = percent_index + 1
+            while j < len(expressao) and (expressao[j].isdigit() or expressao[j] == '.'):
+                right_num += expressao[j]
+                j += 1
+            if left_num and right_num:
+                expressao = expressao[:i+1] + f"{float(left_num) * (float(right_num)/100)}" + expressao[j:]
+            else:
+                raise ValueError("Expressão inválida!")
+        
         nomes_permitidos = {
             "math": math,
             "exp": math.exp,
@@ -113,12 +132,13 @@ class CalculatorApp(App):
         resultado = eval(expressao, {"__builtins__": None}, nomes_permitidos)
         
         # Se a expressão contém uma das funções que devem ser formatadas como decimal
-        if any(func in expressao for func in ["log", "sin", "cos", "tan"]):
-            resultado = "{:.2f}".format(resultado)
-        else:
-            resultado = str(resultado)
-        
-        return resultado
+        if isinstance(resultado, float):
+            if resultado.is_integer():
+                resultado = int(resultado)
+            else:
+                resultado = round(resultado, 2)
+
+        return str(resultado)
 
     def atualizar_historico(self):
         history_label = self.root.get_screen('history').ids.history_label
