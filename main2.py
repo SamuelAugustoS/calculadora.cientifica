@@ -52,7 +52,7 @@ class CalculatorApp(App):
             self.resultado = ""
             text_input.text = ""
         elif texto_botao == "Mod":
-            self.expressao += "//"
+            self.expressao += "%"
             text_input.text = self.expressao
         elif texto_botao in ["^", "yx"]:
             self.expressao += "**"
@@ -67,7 +67,7 @@ class CalculatorApp(App):
             self.expressao += f"{texto_botao}("
             text_input.text = self.expressao
         elif texto_botao == "x":
-            self.expressao += "*"
+            self.expressao += "x"
             text_input.text = self.expressao
         elif texto_botao == "(-)":
             self.expressao += "-"
@@ -80,9 +80,6 @@ class CalculatorApp(App):
             text_input.text = self.expressao
         elif texto_botao == "π":
             self.expressao += str(math.pi)
-            text_input.text = self.expressao
-        elif texto_botao == "//":
-            self.expressao += "/100"
             text_input.text = self.expressao
         elif texto_botao == "%":
             self.expressao += "/100"
@@ -101,6 +98,7 @@ class CalculatorApp(App):
         expressao = expressao.replace("cos", "cos_graus")
         expressao = expressao.replace("tan", "tan_graus")
         expressao = expressao.replace("log", "math.log10")
+        expressao = expressao.replace("x", "*")  # Substitui 'x' pelo operador de multiplicação
         
         nomes_permitidos = {
             "math": math,
