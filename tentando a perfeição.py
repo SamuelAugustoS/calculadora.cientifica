@@ -67,8 +67,8 @@ class CalculatorApp(App):
             self.expressao += f"{texto_botao}("
             text_input.text = self.expressao
         elif texto_botao == "x":
-            self.expressao += "x"
-            text_input.text = self.expressao
+            self.expressao += "*"
+            text_input.text += "x"
         elif texto_botao == "(-)":
             self.expressao += "-"
             text_input.text = self.expressao
