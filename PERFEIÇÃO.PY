@@ -1,4 +1,5 @@
 import math
+import re
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
@@ -54,10 +55,10 @@ class CalculatorApp(App):
             self.resultado = ""
             text_input.text = ""
         elif texto_botao == "Mod":
-            self.expressao += "//"
+            self.expressao += " Mod "
             text_input.text = self.expressao
-        elif texto_botao in ["^", "yx"]:
-            self.expressao += "**"
+        elif texto_botao == "^":
+            self.expressao += "^"
             text_input.text = self.expressao
         elif texto_botao == "√":
             self.expressao += "√("
@@ -75,7 +76,7 @@ class CalculatorApp(App):
             self.expressao += "-"
             text_input.text = self.expressao
         elif texto_botao == "()":
-            if not self.expressao or self.expressao[-1] in ["+", "-", "x", "÷", "^", "(", ")", "√"]:
+            if not self.expressao or self.expressao[-1] in ["+", "-", "*", "/", "^", "(", ")", "√"]:
                 self.expressao += "("
             else:
                 self.expressao += ")"
@@ -92,7 +93,7 @@ class CalculatorApp(App):
             if texto_botao == "÷":
                 texto_botao = "/"
             self.expressao += texto_botao
-            text_input.text = self.expressao
+            text_input.text = self.expressao.replace("/", "÷")
 
     def calcular_expressao(self, expressao):
         expressao = expressao.replace("x", "*")
@@ -103,8 +104,15 @@ class CalculatorApp(App):
         expressao = expressao.replace("log", "math.log10")
         expressao = expressao.replace("exp", "math.exp")
         expressao = expressao.replace("ex", "ex")
+        expressao = expressao.replace("÷", "/")
+        
+        # Substitua ^ por **
+        expressao = expressao.replace("^", "**")
+        
+        # Substitua "Mod" por "%"
+        expressao = expressao.replace("Mod", "%")
 
-        # Substitui porcentagens pela operação correta
+        # Substitua porcentagens pela operação correta
         expressao = self.converter_porcentagens(expressao)
         
         nomes_permitidos = {
@@ -130,8 +138,7 @@ class CalculatorApp(App):
         return str(resultado)
 
     def converter_porcentagens(self, expressao):
-        import re
-        # Encontra todas as ocorrências de números seguidos por %
+        # Encontra todas as ocorrências de números seguid
         padrao = re.compile(r'(\d+(\.\d+)?)%')
         # Substitui 'n%' por 'n/100'
         return padrao.sub(r'(\1/100)', expressao)
