@@ -1,7 +1,7 @@
 import math
+import re
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
 from kivy.metrics import dp
 
@@ -18,6 +18,9 @@ def cos_graus(angulo_graus):
 
 def tan_graus(angulo_graus):
     return math.tan(graus_para_radianos(angulo_graus))
+
+def ex(numero):
+    return math.exp(numero)
 
 class CalculatorApp(App):
     def build(self):
@@ -52,28 +55,28 @@ class CalculatorApp(App):
             self.resultado = ""
             text_input.text = ""
         elif texto_botao == "Mod":
-            self.expressao += "//"
+            self.expressao += " Mod "
             text_input.text = self.expressao
-        elif texto_botao in ["^", "yx"]:
-            self.expressao += "**"
+        elif texto_botao == "^":
+            self.expressao += "^"
             text_input.text = self.expressao
         elif texto_botao == "√":
             self.expressao += "√("
             text_input.text = self.expressao
         elif texto_botao == "ex":
-            self.expressao += "exp("
+            self.expressao += "ex("
             text_input.text = self.expressao
         elif texto_botao in ["sin", "cos", "tan", "log"]:
             self.expressao += f"{texto_botao}("
             text_input.text = self.expressao
         elif texto_botao == "x":
-            self.expressao += "*"
+            self.expressao += "x"
             text_input.text = self.expressao
         elif texto_botao == "(-)":
             self.expressao += "-"
             text_input.text = self.expressao
         elif texto_botao == "()":
-            if not self.expressao or self.expressao[-1] in ["+", "-", "x", "÷", "^", "(", ")", "√"]:
+            if not self.expressao or self.expressao[-1] in ["+", "-", "*", "/", "^", "(", ")", "√"]:
                 self.expressao += "("
             else:
                 self.expressao += ")"
@@ -81,11 +84,8 @@ class CalculatorApp(App):
         elif texto_botao == "π":
             self.expressao += str(math.pi)
             text_input.text = self.expressao
-        elif texto_botao == "//":
-            self.expressao += "/100"
-            text_input.text = self.expressao
         elif texto_botao == "%":
-            self.expressao += "/100"
+            self.expressao += "%"
             text_input.text = self.expressao
         elif texto_botao == "Hist":
             self.root.current = 'history'
@@ -93,26 +93,55 @@ class CalculatorApp(App):
             if texto_botao == "÷":
                 texto_botao = "/"
             self.expressao += texto_botao
-            text_input.text = self.expressao
+            text_input.text = self.expressao.replace("/", "÷")
 
     def calcular_expressao(self, expressao):
+        expressao = expressao.replace("x", "*")
         expressao = expressao.replace("√", "math.sqrt")
         expressao = expressao.replace("sin", "sin_graus")
         expressao = expressao.replace("cos", "cos_graus")
         expressao = expressao.replace("tan", "tan_graus")
+        expressao = expressao.replace("log", "math.log10")
+        expressao = expressao.replace("exp", "math.exp")
+        expressao = expressao.replace("ex", "ex")
+        expressao = expressao.replace("÷", "/")
+        
+        # Substitua ^ por **
+        expressao = expressao.replace("^", "**")
+        
+        # Substitua "Mod" por "%"
+        expressao = expressao.replace("Mod", "%")
+
+        # Substitua porcentagens pela operação correta
+        expressao = self.converter_porcentagens(expressao)
         
         nomes_permitidos = {
             "math": math,
             "exp": math.exp,
-            "log": math.log10,
             "pi": math.pi,
             "e": math.e,
             "sin_graus": sin_graus,
             "cos_graus": cos_graus,
-            "tan_graus": tan_graus
+            "tan_graus": tan_graus,
+            "ex": ex
         }
+        
         resultado = eval(expressao, {"__builtins__": None}, nomes_permitidos)
-        return "{:.2f}".format(resultado)
+        
+        # Se a expressão contém uma das funções que devem ser formatadas como decimal
+        if isinstance(resultado, float):
+            if resultado.is_integer():
+                resultado = int(resultado)
+            else:
+                resultado = round(resultado, 2)
+
+        return str(resultado)
+
+    def converter_porcentagens(self, expressao):
+        # Encontra todas as ocorrências de números seguid
+        padrao = re.compile(r'(\d+(\.\d+)?)%')
+        # Substitui 'n%' por 'n/100'
+        return padrao.sub(r'(\1/100)', expressao)
 
     def atualizar_historico(self):
         history_label = self.root.get_screen('history').ids.history_label
