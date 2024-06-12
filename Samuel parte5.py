@@ -13,3 +13,4 @@ class HistoryScreen(Screen):
 
 if __name__ == "__main__":
     CalculatorApp().run()
+    
