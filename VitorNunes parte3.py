@@ -1,18 +1,10 @@
 class CalculatorApp(App):
     def build(self):
-        # Configuração da janela e inicialização de variáveis
-        # Criação do gerenciador de tela e adição das telas
-        # Retorno do gerenciador de tela como interface principal
-        # ...
-
-    def calcular_expressao(self, expressao):
-        # Lógica para calcular uma expressão matemática
-        # ...
-
-    def atualizar_historico(self):
-        # Lógica para atualizar o histórico exibido na tela
-        # ...
-
-    def back_to_calculator(self):
-        # Lógica para retornar à tela da calculadora
-        # ...
+        Window.size = (400, 600)
+        self.expressao = ""
+        self.resultado = ""
+        self.historico = []
+        self.screen_manager = ScreenManager()
+        self.screen_manager.add_widget(CalculatorScreen(name='calculator'))
+        self.screen_manager.add_widget(HistoryScreen(name='history'))
+        return self.screen_manager
